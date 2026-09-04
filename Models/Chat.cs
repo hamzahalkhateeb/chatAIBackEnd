@@ -14,5 +14,6 @@ public class Chat
     public Guid CreatedBy {get; set;}
     //updated at
     public DateTimeOffset UpdatedAt {get; set;}
+    public Guid PinnedMessageId {get; set;}
     
 }
