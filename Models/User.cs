@@ -1,5 +1,8 @@
 namespace backEnd.Models;
 
+
+//standard user
+//if there was different types of log in then we would have to split the user to account details and user details but that's unnecessary for now
 public class User
 {
     public Guid Id {get; set;}

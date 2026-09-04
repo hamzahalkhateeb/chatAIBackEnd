@@ -4,6 +4,9 @@ public class ChatMembers
 {
     public Guid ChatId {get; set;}
     public Guid UserId {get; set;}
+
+    //admin, regular, second hand etc
+    //sub admin can have less powers like deleting messages, maybe name this mod for the lols
     public string Role {get; set;} = string.Empty;
 
     public DateTimeOffset JoinedAt {get; set;}
@@ -15,7 +18,7 @@ public class ChatMembers
 
     public DateTimeOffset SuspendedUntil {get; set;}
 
-    public bool IsPinned {get; set;} = false;
+
 
     
 
