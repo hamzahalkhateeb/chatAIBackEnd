@@ -7,7 +7,7 @@ public class Chat
 
     public string Name {get; set;} = string.Empty;
 
-    //created at
+    
     public DateTimeOffset CreatedAt {get; set;}
 
     //created by
@@ -15,5 +15,7 @@ public class Chat
     //updated at
     public DateTimeOffset UpdatedAt {get; set;}
     public Guid PinnedMessageId {get; set;}
+
+    public Guid PinnedUser {get; set;}
     
 }
