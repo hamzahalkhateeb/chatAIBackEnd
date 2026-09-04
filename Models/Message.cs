@@ -22,4 +22,5 @@ public class Message
     public bool IsDeleted {get; set;} = false;
 
     public List<string> EditHistory {get; set;} = new();
+    public Guid AttachmentId {get; set;}
 }
