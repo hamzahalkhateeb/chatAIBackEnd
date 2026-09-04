@@ -6,11 +6,12 @@ namespace backEnd.Models;
 
 public class MessageReaction
 {
-    public Guid MessageId {get; set;}
-    public Guid SenderId {get; set;}
+    public Guid Id { get; set; }
+    public Guid MessageId { get; set; }
+    public Guid SenderId { get; set; }
 
-    public string Emoji {get; set;} = string.Empty;
+    public string Emoji { get; set; } = string.Empty;
 
-    public DateTimeOffset CreatedAt {get; set;}
-    
+    public DateTimeOffset CreatedAt { get; set; }
+
 }
