@@ -1,0 +1,1 @@
+//almost all message functionality will be implemented in signal R, not REST API
