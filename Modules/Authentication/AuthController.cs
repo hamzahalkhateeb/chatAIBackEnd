@@ -31,6 +31,7 @@ using Microsoft.AspNetCore.Mvc;
 using backEnd.Modules;
 using backEnd.Modules.Authentication;
 using backEnd.Modules.Utils;
+using backEnd.Modules.User;
 using backEnd.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Identity.Data;
@@ -43,11 +44,16 @@ namespace backEnd.Modules.Authentication
     public class AuthController : ControllerBase
     {
         private readonly AuthService _authService;
+        private readonly UserService _userService;
 
-        public AuthController(AuthService authService)
+        //dependancy inject services from other files
+        //normal classes have to be injected here while static classes can be used directly 
+        public AuthController(AuthService authService, UserService userService)
         {
             _authService = authService;
+            _userService = userService;
         }
+        
         
 
         //log in
@@ -60,6 +66,8 @@ namespace backEnd.Modules.Authentication
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest request)
         {
+
+            Console.WriteLine($"AuthController.loginEndpoint: endpoint reached, attempted log in with email: {request.Email}, password: {request.Password}");
             //Extract email address and password
             var email = request.Email;
             var password = request.Password;
@@ -67,11 +75,23 @@ namespace backEnd.Modules.Authentication
             //validate data
             if( Utils.Validations.IsValidEmail(email) == false || Utils.Validations.IsValidPassword(password) == false)
             {
+                Console.WriteLine($"AuthController.login Endpoint: Received data failed validation, returning error code 400");
                 return BadRequest();
             }
 
             
-            //TODO: call service: look for existing email
+            // call service: look for existing email
+            var user = _userService.FindUserViaEmail(email);
+            if(user == null)
+            {
+                Console.WriteLine($"AuthController.login Endpoint: user not foud, returning 401");
+                return Unauthorized();
+            }
+            else
+            {
+                //match hashed passwords
+                //hash password first then match them
+            } 
 
 
             return Ok();
