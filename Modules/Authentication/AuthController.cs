@@ -73,6 +73,7 @@ namespace backEnd.Modules.Authentication
             var password = request.Password;
 
             //validate data
+            //password doesnt actually need validation given this is a login attempt, not a sign up.
             if( Utils.Validations.IsValidEmail(email) == false || Utils.Validations.IsValidPassword(password) == false)
             {
                 Console.WriteLine($"AuthController.login Endpoint: Received data failed validation, returning error code 400");
@@ -81,7 +82,7 @@ namespace backEnd.Modules.Authentication
 
             
             // call service: look for existing email
-            var user = _userService.FindUserViaEmail(email);
+            var user = await _userService.FindUserViaEmail(email);
             if(user == null)
             {
                 Console.WriteLine($"AuthController.login Endpoint: user not foud, returning 401");
@@ -89,12 +90,28 @@ namespace backEnd.Modules.Authentication
             }
             else
             {
-                //match hashed passwords
-                //hash password first then match them
+                Console.WriteLine($"AuthController.login Endpoint: user foud, passing password: {password} for hashing");
+                
+                var HashedPassword = AuthService.HashPassword(password);
+                
+                Console.WriteLine($"AuthController.login Endpoint: password has been hashed: {HashedPassword}, passing it for comparison");
+
+                bool Matching = AuthService.IsCorrectPassword(user.PasswordHash, HashedPassword);
+
+                if (Matching)
+                {
+                    Console.WriteLine($"AuthController.login Endpoint: Correct password");
+                    return Ok();
+                }else
+                {
+                    Console.WriteLine($"AuthController.login Endpoint: Incorrect password");
+                    return Unauthorized();
+                }
+                
             } 
 
 
-            return Ok();
+            
 
 
         }
