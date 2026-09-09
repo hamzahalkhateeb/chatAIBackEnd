@@ -3,6 +3,17 @@ using Microsoft.EntityFrameworkCore;
 using backEnd.Data;
 using DotNetEnv;
 using Microsoft.IdentityModel.Tokens;
+using backEnd.Modules.Authentication;
+using backEnd.Modules.User;
+using backEnd.Modules.Utils;
+/*
+import services for the following
+chat
+message
+notification
+reaction
+
+*/
 
 DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -36,14 +47,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql($"Host={DB_HOST};PORT={DB_PORT};Database={DB};Username={DB_USER};Password={DB_PASSWORD}")
     );
 
-var app = builder.Build();
-app.MapGet("/", () =>
-{
-    var CR = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? "Not Set";
-    return $"Connection String: {CR}";
 
-}
-);
 
 
 //allow cors settings
@@ -54,6 +58,21 @@ builder.Services.AddCors(options =>
         policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
     });
 });
+
+//register controllers and services
+builder.Services.AddControllers(); 
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<UserService>();
+//more services to add here later
+
+var app = builder.Build();
+app.MapGet("/", () =>
+{
+    var CR = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? "Not Set";
+    return $"Connection String: {CR}";
+
+}
+);
 
 
 app.UseHttpsRedirection();
