@@ -12,16 +12,16 @@ public class Chat
     [Required]
     public string Name {get; set;} = string.Empty;
 
-    
+    [Required]
     public DateTimeOffset CreatedAt {get; set;}
 
     //created by
     [Required]
     public Guid CreatedBy {get; set;}
     //updated at
-    public DateTimeOffset UpdatedAt {get; set;}
-    public Guid PinnedMessageId {get; set;}
+    public DateTimeOffset? UpdatedAt {get; set;}
+    public Guid? PinnedMessageId {get; set;}
 
-    public Guid PinnedUser {get; set;}
+    public Guid? PinnedUser {get; set;}
     
 }

@@ -15,6 +15,7 @@ public class Keyword
     
     [Required]
     public string Term {get; set;}=string.Empty;
+    [Required]
     public DateTimeOffset CreatedAt {get; set;}
 
 }

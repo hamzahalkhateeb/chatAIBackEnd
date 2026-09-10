@@ -12,7 +12,9 @@ public class Notification
     [Required]
     public Guid MessageId {get; set;}
     public string Payload {get; set;}=string.Empty;
+    [Required]
     public DateTimeOffset CreatedAt {get; set;}
+    [Required]
     public DateTimeOffset ReadAt {get; set;}
 
 }
