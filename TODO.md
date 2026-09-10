@@ -1,4 +1,4 @@
-refresh token generation done
+
 access token next
 log in test via post man
 cors settings
@@ -9,7 +9,7 @@ complete the log in endpoint
 move on to registration
 registration endpoint
 
------------------------------------------------------------
+------------------------------------------------------
 
 http rules:
  HTTP rules

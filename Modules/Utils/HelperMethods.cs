@@ -8,7 +8,9 @@ using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
 using System.Text;
-
+using System.IdentityModel.Tokens.Jwt;
+using  System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
 namespace backEnd.Modules.Utils
 {
     public class HelperMethods
@@ -68,10 +70,45 @@ namespace backEnd.Modules.Utils
 
         }
 
+        //the following method is in this file as it doesnt touch the db
+        //refresh token is in services because it touches the db
         public static string GenerateAccessToken(string UserId)
         {
+            //get secret
+            var secret = Environment.GetEnvironmentVariable("ACCESS_SECRET")??throw new InvalidOperationException("SECRET not found");
 
-            return UserId;
+            //things to attach to the token
+            Console.WriteLine($"HelperMethods.GenerateAccessToken: method called, about to create claims");
+            
+            var claims = new[]
+            {
+                //jwtregistreted defines a small set of standard claim names
+                //.sub stands for subject to note "who is this key for?" in this case its the user, hence user id
+                new Claim(JwtRegisteredClaimNames.Sub, UserId.ToString()),
+                //jti stands for jwt id, so we assign it a guid
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+
+            };
+
+            Console.WriteLine($"HelperMethods.GenerateAccessToken: claims created: {claims}");
+
+            //new instance of symmetric security key, it takes the env secret, however, it only takes bytes form of it, not direct strings            
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+            //signs the key and chooses which algorithm to incrypt it
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            Console.WriteLine($"HelperMethods.GenerateAccessToken: created key and credentials for the token - key: {key}, creds: {creds}");
+            //finally, compose the full jwt
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(15),
+                signingCredentials: creds
+            );
+
+            var AccessToken =  new JwtSecurityTokenHandler().WriteToken(token);
+            Console.WriteLine($"HelperMethods.GenerateAccessToken: final Access Token: {AccessToken}");
+            
+            return AccessToken;
         }
 
         
