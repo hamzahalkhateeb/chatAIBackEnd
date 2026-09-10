@@ -92,15 +92,39 @@ namespace backEnd.Modules.Authentication
             {
                 Console.WriteLine($"AuthController.login Endpoint: user foud, passing password: {password} for hashing");
                 
-                var HashedPassword = AuthService.HashPassword(password);
+                var HashedPassword = HelperMethods.HashPassword(password);
                 
                 Console.WriteLine($"AuthController.login Endpoint: password has been hashed: {HashedPassword}, passing it for comparison");
 
-                bool Matching = AuthService.IsCorrectPassword(user.PasswordHash, HashedPassword);
+                //for testing purposes, hashing will be disabled to 
+                //bool Matching = true;
+                bool Matching = HelperMethods.IsCorrectPassword(user.PasswordHash, HashedPassword);
 
                 if (Matching)
                 {
                     Console.WriteLine($"AuthController.login Endpoint: Correct password");
+                    //create the tokens and return them
+                    //create access token jwt
+                        //store in memory
+                        //should have userId and time it was signed and time it is to be expired
+                        //the frontend checks if the token is expired, if it is, it sends the refresh instead
+                        //if the token isnt expired its sent normally, if the token is expired on the backend though, a redirect link is sent to front end
+                        //front end, after recieving redirect link, sends the refresh token
+                        
+                    // create refresh token string
+                        //store in a cookie by a client
+                        //in db by a server, should have the user Id, revoked or not, expiry time, expired or not!
+                        //in the cases where the refresh token is sent it is checked to see if it is expired, revoked and if the user is the actual owner of the token, then a new access token is given and a new refresh token is given, existing refresh token is killed off
+                        //refresh token is deleted when user logs out
+                        //
+
+
+                    //both are sent to client
+
+                    
+            
+
+                    
                     return Ok();
                 }else
                 {
