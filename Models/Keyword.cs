@@ -1,4 +1,5 @@
 
+using System.ComponentModel.DataAnnotations;
 
 namespace backEnd.Models;
 
@@ -8,7 +9,11 @@ namespace backEnd.Models;
 public class Keyword
 {
     public Guid Id {get; set;}
+
+    [Required]
     public Guid CategoryId {get; set;}
+    
+    [Required]
     public string Term {get; set;}=string.Empty;
     public DateTimeOffset CreatedAt {get; set;}
 

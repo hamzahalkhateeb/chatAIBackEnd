@@ -1,12 +1,14 @@
 
 namespace backEnd.Models;
+using System.ComponentModel.DataAnnotations;
 
 public class Message
 {
     public Guid Id {get; set;}
 
+    [Required]
     public Guid ChatId {get; set;}
-
+    [Required]
     public Guid SenderId {get; set;}
 
     public string Body {get; set;} = string.Empty;
@@ -14,7 +16,7 @@ public class Message
     public Guid ReplyToMessageId {get; set;}
 
     public DateTimeOffset  CreatedAt {get; set;}
-
+    
     public DateTimeOffset UpdatedAt {get; set;}
     public DateTimeOffset DeletedAt {get; set;}
 
