@@ -1,6 +1,12 @@
-
+refresh token generation done
+access token next
+log in test via post man
+cors settings
+quick front end call from browser
+check if tokens are working
 complete the log in endpoint
-token generation and allat
+
+move on to registration
 registration endpoint
 
 -----------------------------------------------------------
@@ -19,4 +25,6 @@ State conflict / stale version 409
 Unexpected server failure 500 with correlation ID, no stack trace to client
 
 
+-----------
+any methods that touch the db would be in service files, any that dont touch the db are in helperMethods file
 

@@ -38,13 +38,8 @@ namespace backEnd.Modules.Utils
             return result == PasswordVerificationResult.Success;
         }
 
-        public static string GenerateAccessToken(string UserId)
-        {
 
-            return UserId;
-        }
-
-        private static string GenerateSecureRandomString(int byteLength = 64)
+        public static string GenerateSecureRandomString(int byteLength = 64)
         {
             var bytes = RandomNumberGenerator.GetBytes(byteLength);
             var secureString = Convert.ToBase64String(bytes).Replace("+", "-").Replace("/", "_").Replace("=", "");
@@ -55,7 +50,7 @@ namespace backEnd.Modules.Utils
         }
 
         //different hashing algorithm than the password hasher
-        private static string HashToken(string RawToken)
+        public static string HashToken(string RawToken)
         {
             Console.WriteLine($"HelperMethods.HashToken: method called");
             var secret = Environment.GetEnvironmentVariable("REFRESH_SECRET") ?? throw new InvalidOperationException("REFRESH_SECRET_NOT_FOUND");
@@ -73,6 +68,12 @@ namespace backEnd.Modules.Utils
 
         }
 
+        public static string GenerateAccessToken(string UserId)
+        {
 
+            return UserId;
+        }
+
+        
     }
 }
