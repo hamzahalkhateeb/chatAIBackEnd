@@ -1,5 +1,4 @@
-go through each model and decide which fields need to be allowed to be null
-maybe apply restrictions and criteria per field
+understand how a refresh token works
 complete the log in endpoint
 token generation and allat
 registration endpoint
@@ -18,3 +17,6 @@ Authenticated but not permitted 403
 Resource does not exist / hidden by policy 404
 State conflict / stale version 409
 Unexpected server failure 500 with correlation ID, no stack trace to client
+
+
+---methods to move to helper classes
