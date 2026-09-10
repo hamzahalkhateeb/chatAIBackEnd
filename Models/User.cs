@@ -18,7 +18,7 @@ public class User
     public string? Bio {get; set;} 
     public string? AvatarStorageKey {get; set;}
     public DateTimeOffset CreatedAt {get; set;}
-    public DateTimeOffset UpdatedAt {get; set;}
-    public DateTimeOffset DisabledAt {get; set;}
+    public DateTimeOffset? UpdatedAt {get; set;}
+    public DateTimeOffset? DisabledAt {get; set;}
     
 }

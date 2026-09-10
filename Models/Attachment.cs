@@ -8,10 +8,10 @@ public class Attachment
     [Required]
     public Guid MessageId { get; set; }
 
-    public string Name { get; set; } = string.Empty;
-    public int SizeBytes { get; set; }
+    public string? Name { get; set; } = string.Empty;
+    public int? SizeBytes { get; set; }
 
-    public string StorageKey { get; set; } = string.Empty;
+    public string? StorageKey { get; set; } = string.Empty;
     public DateTimeOffset CreatedAt { get; set; }
 
 }

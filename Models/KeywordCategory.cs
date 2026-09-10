@@ -10,6 +10,6 @@ public class KeywordCategory
     public string Name {get; set;}=string.Empty;
     [Required]
     public string Severity {get; set;}=string.Empty;
-
+    [Required]
     public DateTimeOffset CreatedAt {get; set;}
 }

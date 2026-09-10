@@ -13,7 +13,7 @@ public class MessageReaction
     public Guid SenderId { get; set; }
     [Required]
     public string Emoji { get; set; } = string.Empty;
-
+    [Required]
     public DateTimeOffset CreatedAt { get; set; }
 
 }

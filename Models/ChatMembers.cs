@@ -18,12 +18,12 @@ public class ChatMembers
     public DateTimeOffset JoinedAt { get; set; }
 
     
-    public DateTimeOffset LeftAt { get; set; }
+    public DateTimeOffset? LeftAt { get; set; }
 
-    public DateTimeOffset LastReadMessageId { get; set; }
-    public DateTimeOffset LastReadAt { get; set; }
+    public DateTimeOffset? LastReadMessageId { get; set; }
+    public DateTimeOffset? LastReadAt { get; set; }
 
-    public DateTimeOffset SuspendedUntil { get; set; }
+    public DateTimeOffset? SuspendedUntil { get; set; }
 
 
 

@@ -9,5 +9,6 @@ public class MessageFlag
     public Guid CategoryId {get; set;}
     [Required]
     public string MatchedTerm {get; set;}=string.Empty;
+    [Required]
     public DateTimeOffset CreatedAt {get; set;}
 }

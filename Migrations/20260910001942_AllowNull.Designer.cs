@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backEnd.Data;
@@ -12,9 +13,11 @@ using backEnd.Data;
 namespace backEnd.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260910001942_AllowNull")]
+    partial class AllowNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,12 +40,14 @@ namespace backEnd.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("SizeBytes")
+                    b.Property<int>("SizeBytes")
                         .HasColumnType("integer");
 
                     b.Property<string>("StorageKey")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -72,13 +77,13 @@ namespace backEnd.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("PinnedMessageId")
+                    b.Property<Guid>("PinnedMessageId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("PinnedUser")
+                    b.Property<Guid>("PinnedUser")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -99,20 +104,20 @@ namespace backEnd.Migrations
                     b.Property<DateTimeOffset>("JoinedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTimeOffset?>("LastReadAt")
+                    b.Property<DateTimeOffset>("LastReadAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTimeOffset?>("LastReadMessageId")
+                    b.Property<DateTimeOffset>("LastReadMessageId")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTimeOffset?>("LeftAt")
+                    b.Property<DateTimeOffset>("LeftAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset?>("SuspendedUntil")
+                    b.Property<DateTimeOffset>("SuspendedUntil")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
@@ -181,7 +186,7 @@ namespace backEnd.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
-                    b.Property<Guid?>("AttachmentId")
+                    b.Property<Guid>("AttachmentId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Body")
@@ -194,10 +199,11 @@ namespace backEnd.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTimeOffset?>("DeletedAt")
+                    b.Property<DateTimeOffset>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.PrimitiveCollection<List<string>>("EditHistory")
+                        .IsRequired()
                         .HasColumnType("text[]");
 
                     b.Property<bool>("IsDeleted")
@@ -206,13 +212,13 @@ namespace backEnd.Migrations
                     b.Property<bool>("IsEdited")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid?>("ReplyToMessageId")
+                    b.Property<Guid>("ReplyToMessageId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("SenderId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");

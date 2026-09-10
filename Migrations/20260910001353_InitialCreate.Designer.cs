@@ -13,7 +13,7 @@ using backEnd.Data;
 namespace backEnd.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260904060136_InitialCreate")]
+    [Migration("20260910001353_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -21,7 +21,7 @@ namespace backEnd.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.11")
+                .HasAnnotation("ProductVersion", "10.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -30,7 +30,8 @@ namespace backEnd.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -51,6 +52,8 @@ namespace backEnd.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MessageId");
+
                     b.ToTable("Attachments");
                 });
 
@@ -58,7 +61,8 @@ namespace backEnd.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -91,6 +95,10 @@ namespace backEnd.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<Guid>("ChatId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset>("JoinedAt")
@@ -117,6 +125,10 @@ namespace backEnd.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("UserId");
+
                     b.ToTable("ChatMembers");
                 });
 
@@ -124,7 +136,8 @@ namespace backEnd.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid");
@@ -138,6 +151,8 @@ namespace backEnd.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Keywords");
                 });
 
@@ -145,7 +160,8 @@ namespace backEnd.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -167,7 +183,8 @@ namespace backEnd.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<Guid>("AttachmentId")
                         .HasColumnType("uuid");
@@ -206,6 +223,10 @@ namespace backEnd.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("SenderId");
+
                     b.ToTable("Messages");
                 });
 
@@ -213,7 +234,8 @@ namespace backEnd.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid");
@@ -227,6 +249,8 @@ namespace backEnd.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("MessageFlags");
                 });
 
@@ -234,7 +258,8 @@ namespace backEnd.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -251,6 +276,10 @@ namespace backEnd.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MessageId");
+
+                    b.HasIndex("SenderId");
+
                     b.ToTable("MessageReactions");
                 });
 
@@ -258,7 +287,8 @@ namespace backEnd.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<Guid>("ChatId")
                         .HasColumnType("uuid");
@@ -281,6 +311,12 @@ namespace backEnd.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("MessageId");
+
+                    b.HasIndex("ReceiverId");
+
                     b.ToTable("Notifications");
                 });
 
@@ -288,7 +324,8 @@ namespace backEnd.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -312,6 +349,8 @@ namespace backEnd.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("RefreshTokens");
                 });
 
@@ -319,7 +358,8 @@ namespace backEnd.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<string>("AvatarStorageKey")
                         .HasColumnType("text");
@@ -353,6 +393,12 @@ namespace backEnd.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
