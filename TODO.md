@@ -1,5 +1,10 @@
-index emails and usernames in user
+go through each model and decide which fields need to be allowed to be null
+maybe apply restrictions and criteria per field
+complete the log in endpoint
+token generation and allat
+registration endpoint
 
+-----------------------------------------------------------
 
 http rules:
  HTTP rules
