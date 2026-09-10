@@ -1,4 +1,4 @@
-understand how a refresh token works
+
 complete the log in endpoint
 token generation and allat
 registration endpoint
@@ -19,4 +19,4 @@ State conflict / stale version 409
 Unexpected server failure 500 with correlation ID, no stack trace to client
 
 
----methods to move to helper classes
+
