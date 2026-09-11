@@ -1,14 +1,12 @@
 
 
-check if tokens are working
-complete the log in endpoint
+
 
 when log in is complete:
     1- rehash password incoling password in controller, currently its not being hashed to allow for comparison
     2-fix IsCorrectPassword, currently its a plain comparison
 
-move on to registration
-registration endpoint
+
 
 ------------------------------------------------------
 
@@ -33,6 +31,7 @@ any methods that touch the db would be in service files, any that dont touch the
 --------------------
 missing features from existing code:
 1- when user logs in, check if they already have a refresh token saved, if they do, give them that one
+    needs alot of coordination with front end, will do down the line
 
 bugs to fix:
-1- trailing spaces in email crash the app
+1- trailing spaces in email crash the app -  will fix this with registration end point
