@@ -1,7 +1,5 @@
 
-log in test via post man
-cors settings
-quick front end call from browser
+
 check if tokens are working
 complete the log in endpoint
 
@@ -30,3 +28,11 @@ Unexpected server failure 500 with correlation ID, no stack trace to client
 
 -----------
 any methods that touch the db would be in service files, any that dont touch the db are in helperMethods file
+
+
+--------------------
+missing features from existing code:
+1- when user logs in, check if they already have a refresh token saved, if they do, give them that one
+
+bugs to fix:
+1- trailing spaces in email crash the app
