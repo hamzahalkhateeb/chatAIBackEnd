@@ -77,9 +77,8 @@ app.MapGet("/", () =>
 }
 );
 
-
-app.UseHttpsRedirection();
 app.UseCors("AllowAngular");
+app.UseHttpsRedirection();
 app.MapControllers();
 
 
