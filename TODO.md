@@ -1,7 +1,4 @@
 
-
-
-
 when log in is complete:
     1- rehash password incoling password in controller, currently its not being hashed to allow for comparison
     2-fix IsCorrectPassword, currently its a plain comparison

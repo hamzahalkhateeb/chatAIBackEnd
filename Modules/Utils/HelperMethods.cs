@@ -37,15 +37,9 @@ namespace backEnd.Modules.Utils
         {
             Console.WriteLine($"HelperMethods.IsCorrectPassword: method called, about to compare {UserPassword} and {ProvidedHashedPassword}");
             //tthe following line is how you would compare the passwords if they were both hashed, however because they're not hashed, we wont be able to use this, so well do a simple comparison
-            //var result = _passwordHasher.VerifyHashedPassword(null!, UserPassword, ProvidedHashedPassword);
-            //return result == PasswordVerificationResult.Success;
-             if(UserPassword == ProvidedHashedPassword)
-            {
-                return true;
-            } else
-            {
-                return false;
-            }
+            var result = _passwordHasher.VerifyHashedPassword(null!, UserPassword, ProvidedHashedPassword);
+            return result == PasswordVerificationResult.Success;
+            
         }
 
 

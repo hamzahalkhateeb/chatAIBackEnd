@@ -79,7 +79,7 @@ namespace backEnd.Modules.Authentication
             {
                 Console.WriteLine($"AuthController.login Endpoint: user foud, passing password: {password} for hashing");
                 ///delete password after register endpoint is complete
-                var HashedPassword = password;// HelperMethods.HashPassword(password);
+                var HashedPassword = HelperMethods.HashPassword(password);
                 Console.WriteLine($"AuthController.login Endpoint: password has been hashed: {HashedPassword}, passing it for comparison");
                 //for testing purposes, hashing will be disabled to 
                 //bool Matching = true;
