@@ -36,8 +36,16 @@ namespace backEnd.Modules.Utils
         public static bool IsCorrectPassword(string UserPassword, string ProvidedHashedPassword)
         {
             Console.WriteLine($"HelperMethods.IsCorrectPassword: method called, about to compare {UserPassword} and {ProvidedHashedPassword}");
-            var result = _passwordHasher.VerifyHashedPassword(null!, UserPassword, ProvidedHashedPassword);
-            return result == PasswordVerificationResult.Success;
+            //tthe following line is how you would compare the passwords if they were both hashed, however because they're not hashed, we wont be able to use this, so well do a simple comparison
+            //var result = _passwordHasher.VerifyHashedPassword(null!, UserPassword, ProvidedHashedPassword);
+            //return result == PasswordVerificationResult.Success;
+             if(UserPassword == ProvidedHashedPassword)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
         }
 
 
@@ -72,7 +80,7 @@ namespace backEnd.Modules.Utils
 
         //the following method is in this file as it doesnt touch the db
         //refresh token is in services because it touches the db
-        public static string GenerateAccessToken(string UserId)
+        public static string GenerateAccessToken(Guid UserId)
         {
             //get secret
             var secret = Environment.GetEnvironmentVariable("ACCESS_SECRET")??throw new InvalidOperationException("SECRET not found");
