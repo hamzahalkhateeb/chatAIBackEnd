@@ -74,7 +74,7 @@ namespace backEnd.Modules.Authentication
 
             //validate data
             //password doesnt actually need validation given this is a login attempt, not a sign up.
-            if( Utils.Validations.IsValidEmail(email) == false || Utils.Validations.IsValidPassword(password) == false)
+            if( Utils.Validations.IsValidEmail(email) == false)
             {
                 Console.WriteLine($"AuthController.login Endpoint: Received data failed validation, returning error code 400");
                 return BadRequest();
@@ -86,13 +86,14 @@ namespace backEnd.Modules.Authentication
             if(user == null)
             {
                 Console.WriteLine($"AuthController.login Endpoint: user not foud, returning 401");
-                return Unauthorized();
+                return Unauthorized(new {message = "Null User"});
             }
             else
             {
                 Console.WriteLine($"AuthController.login Endpoint: user foud, passing password: {password} for hashing");
+                ///delete password after register endpoint is complete
                 
-                var HashedPassword = HelperMethods.HashPassword(password);
+                var HashedPassword =password;// HelperMethods.HashPassword(password);
                 
                 Console.WriteLine($"AuthController.login Endpoint: password has been hashed: {HashedPassword}, passing it for comparison");
 
@@ -103,7 +104,9 @@ namespace backEnd.Modules.Authentication
                 if (Matching)
                 {
                     Console.WriteLine($"AuthController.login Endpoint: Correct password");
+
                     //create the tokens and return them
+                    var AccessToken = HelperMethods.GenerateAccessToken(user.Id);
                     //create access token jwt
                         //store in memory
                         //should have userId and time it was signed and time it is to be expired
@@ -112,24 +115,19 @@ namespace backEnd.Modules.Authentication
                         //front end, after recieving redirect link, sends the refresh token
                         
                     // create refresh token string
+                    var RefreshToken = await _authService.GenerateRefreshToken(user.Id);
                         //store in a cookie by a client
                         //in db by a server, should have the user Id, revoked or not, expiry time, expired or not!
                         //in the cases where the refresh token is sent it is checked to see if it is expired, revoked and if the user is the actual owner of the token, then a new access token is given and a new refresh token is given, existing refresh token is killed off
                         //refresh token is deleted when user logs out
-                        //
 
-
-                    //both are sent to client
-
-                    
-            
-
-                    
-                    return Ok();
+                    //append cookie
+                    Response.Cookies.Append("RefreshToken", RefreshToken, CookieHelper.RefreshTokenCookieOptions());
+                    return Ok(new {message="Log in Successful", AccessToken});
                 }else
                 {
                     Console.WriteLine($"AuthController.login Endpoint: Incorrect password");
-                    return Unauthorized();
+                    return Unauthorized(new {message="Invalid Email or Password"});
                 }
                 
             } 

@@ -1,10 +1,13 @@
 
-access token next
 log in test via post man
 cors settings
 quick front end call from browser
 check if tokens are working
 complete the log in endpoint
+
+when log in is complete:
+    1- rehash password incoling password in controller, currently its not being hashed to allow for comparison
+    2-fix IsCorrectPassword, currently its a plain comparison
 
 move on to registration
 registration endpoint
@@ -27,4 +30,3 @@ Unexpected server failure 500 with correlation ID, no stack trace to client
 
 -----------
 any methods that touch the db would be in service files, any that dont touch the db are in helperMethods file
-
