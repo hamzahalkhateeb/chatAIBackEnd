@@ -39,7 +39,7 @@ namespace backEnd.Modules.Authentication
 
             var refreshToken = new RefreshToken
             {
-                Id = Guid.NewGuid(),
+                
                 UserId = Id,
                 TokenHash = tokenHash,
                 CreatedAt = DateTimeOffset.UtcNow,

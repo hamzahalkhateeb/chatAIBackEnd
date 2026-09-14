@@ -33,7 +33,23 @@ public class UserService
         Console.WriteLine($"UserService.FindUserViaEmail: results found {user}");
         return user;
     }
-
+    //look for an exisstingg user with a usernaame
+    public async Task<FoundUserDTO?> FindUserViaUserName(string UserName)
+    {
+        Console.WriteLine($"UserService.FindUserUserNNaaame: method called, finding user with UserName: {UserName}");
+        var user = await _dbContext.Users.Where(u => u.UserName == UserName)
+        .Select(u => new FoundUserDTO
+        {
+            Id = u.Id,
+            UserName = u.UserName,
+            DisplayName = u.DisplayName,
+            Email = u.Email,
+            PasswordHash = u.PasswordHash
+        })
+        .FirstOrDefaultAsync();
+        Console.WriteLine($"UserService.FindUserViaUserName: results found {user}");
+        return user;
+    }
 
 
     //create a new user using these details

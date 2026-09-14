@@ -1,6 +1,9 @@
 
-follow the comments in registration end point
+line 122, fix get property stuff
 
+check if user saving is a success
+check if token creations is a success
+have a transaction across user creation and access token creation
 
 
 ------------------------------------------------------

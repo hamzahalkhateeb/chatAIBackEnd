@@ -7,6 +7,7 @@ using backEnd.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Identity.Data;
 using System.Text.Json;
+using backEnd.Data;
 
 
 namespace backEnd.Modules.Authentication
@@ -17,12 +18,16 @@ namespace backEnd.Modules.Authentication
     {
         private readonly AuthService _authService;
         private readonly UserService _userService;
+        private readonly AppDbContext _db;
+        private readonly IConfiguration _config;
         //dependancy inject services from other files
         //normal classes have to be injected here while static classes can be used directly 
-        public AuthController(AuthService authService, UserService userService)
+        public AuthController(AuthService authService, UserService userService, IConfiguration config, AppDbContext db)
         {
             _authService = authService;
             _userService = userService;
+            _db = db;
+            _config = config;
         }
 
 
@@ -115,24 +120,76 @@ namespace backEnd.Modules.Authentication
             //email, username, password, display name, bio, avatar storage key - util.validations
             Console.WriteLine($"AuthController.Signup: endpoint reached, extracting data...");
 
-            string UserName = body.GetProperty("UserName").GetString();
-            string DisplayName = body.GetProperty("DisplayName").GetString();
-            string Email = body.GetProperty("Email").GetString();
-            string Password = body.GetProperty("Password").GetString();
-            string? Bio = body.GetProperty("Bio").GetString();
-            string? AvatarStorageKey = body.GetProperty("AvatarStorageKey").GetString();
-            
+            string UserName = user.TryGetProperty("UserName").GetString();
+            string DisplayName = user.GetProperty("DisplayName").GetString();
+            string Email = user.GetProperty("Email").GetString();
+            string Password = user.GetProperty("Password").GetString();
+            string? Bio = user.GetProperty("Bio").GetString();
+            string? AvatarStorageKey = user.GetProperty("AvatarStorageKey").GetString();
+            //following data is created now, it doesnt come from the request
+
+
+
+            Console.WriteLine($"AuthController.Signup: Request Data Extracted: {user}");
 
             //check if user with same email or user name already exists, if already exists return error /user services
+            var FoundUserWithEmail = await _userService.FindUserViaEmail(Email);
+            var FoundUserWithUserName = await _userService.FindUserViaUserName(UserName);
+            if (FoundUserWithEmail != null || FoundUserWithUserName != null)
+            {
+                return Conflict(new { message = "Email or Username already exists!" });
+            }
+
+
+            //validate data
+            if (!Utils.Validations.IsValidEmail(Email) ||
+                !Utils.Validations.IsValidPassword(Password) ||
+                !Utils.Validations.IsValidUsername(UserName) ||
+                !Utils.Validations.IsValidDisplayName(DisplayName) ||
+                !Utils.Validations.IsValidBio(Bio))
+            {
+                Console.WriteLine($"AuthController.Signup: some data is corrupt, returning error bad request");
+                return BadRequest();
+            }
+
 
             //auto generate created at, updated and disabled at is null at first
+
             //hash password
+            Console.WriteLine($"AuthController.Signup: hashing password");
+            var HashedPassword = Utils.HelperMethods.HashPassword(Password);
 
-            //save user using a auth service, use transaction
+            //save user using a auth service, use transaction when using the image uploader down the line, currently, it doesnt need a transactiona s its one action
+            var newUser = new Models.User
+            {
+                UserName = UserName,
+                Email = Email,
+                PasswordHash = HashedPassword,
+                DisplayName = DisplayName,
+                Bio = Bio,
+                AvatarStorageKey = AvatarStorageKey,
+                CreatedAt = DateTimeOffset.UtcNow,
+                UpdatedAt = DateTimeOffset.UtcNow,
+                DisabledAt = null
+            };
 
-            //generate access token and refresh token and return
+            Console.WriteLine($"AuthController.Signup: about to save user in db - Email: {Email}, hashed password: {HashedPassword}, userName: {UserName}, display name: {DisplayName}, bio: {Bio}. CreatedAt, UpdatedAt and DisabledAt are auto generated");
 
-            return Ok();
+            _db.Users.Add(newUser);
+            await _db.SaveChangesAsync();
+
+            Console.WriteLine($"AuthController.Signup: user saved successfully, assigning tokens");
+
+
+            var AccessToken = HelperMethods.GenerateAccessToken(newUser.Id);
+
+            var RefreshToken = await _authService.GenerateRefreshToken(newUser.Id);
+            //append cookie
+            Response.Cookies.Append("RefreshToken", RefreshToken, CookieHelper.RefreshTokenCookieOptions());
+            return Ok(new { message = "signing up successful", AccessToken });
+
+
+
         }
         //1- register user
         //post request comes in
