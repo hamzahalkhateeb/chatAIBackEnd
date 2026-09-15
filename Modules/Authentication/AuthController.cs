@@ -41,7 +41,7 @@ namespace backEnd.Modules.Authentication
             
 
             //Extract email address and password
-            var email = request.Email;
+            var email = request.Email.TrimEnd();
             var password = request.Password;
             //validate data
             //password doesnt actually need validation given this is a login attempt, not a sign up.
@@ -150,8 +150,8 @@ namespace backEnd.Modules.Authentication
                 Console.WriteLine($"AuthController.Signup: Request Data Extracted: {user}");
 
             //check if user with same email or user name already exists, if already exists return error /user services
-            var FoundUserWithEmail = await _userService.FindUserViaEmail(Email);
-            var FoundUserWithUserName = await _userService.FindUserViaUserName(UserName);
+            var FoundUserWithEmail = await _userService.FindUserViaEmail(Email.TrimEnd());
+            var FoundUserWithUserName = await _userService.FindUserViaUserName(UserName.TrimEnd());
             if (FoundUserWithEmail != null || FoundUserWithUserName != null)
             {
                 return Conflict(new { message = "Email or Username already exists!" });
