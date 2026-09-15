@@ -184,7 +184,7 @@ namespace backEnd.Modules.Authentication
             var newUser = new Models.User
             {
                 UserName = UserName,
-                Email = Email,
+                Email = Email.TrimEnd(),
                 PasswordHash = HashedPassword,
                 DisplayName = DisplayName,
                 Bio = Bio,

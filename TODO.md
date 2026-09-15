@@ -25,5 +25,3 @@ missing features from existing code:
 1- when user logs in, check if they already have a refresh token saved, if they do, give them that one
     needs alot of coordination with front end, will do down the line
 
-bugs to fix:
-1- trailing spaces in email crash the app -  will fix this with registration end point
