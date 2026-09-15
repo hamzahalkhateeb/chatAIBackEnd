@@ -34,7 +34,12 @@ namespace backEnd.Modules.Authentication
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest request)
         {
-            Console.WriteLine($"AuthController.loginEndpoint: endpoint reached, attempted log in with email: {request.Email}, password: {request.Password}");
+
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"AuthController.loginEndpoint: endpoint reached, attempted log in with email: {request.Email}, password: {request.Password}");
+
+            
+
             //Extract email address and password
             var email = request.Email;
             var password = request.Password;
@@ -42,28 +47,33 @@ namespace backEnd.Modules.Authentication
             //password doesnt actually need validation given this is a login attempt, not a sign up.
             if (Utils.Validations.IsValidEmail(email) == false)
             {
-                Console.WriteLine($"AuthController.login Endpoint: Received data failed validation, returning error code 400");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"AuthController.login Endpoint: Received data failed validation, returning error code 400");
                 return BadRequest();
             }
             // call service: look for existing email
             var user = await _userService.FindUserViaEmail(email);
             if (user == null)
             {
-                Console.WriteLine($"AuthController.login Endpoint: user not foud, returning 401");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"AuthController.login Endpoint: user not foud, returning 401");
                 return Unauthorized(new { message = "Null User" });
             }
             else
             {
-                Console.WriteLine($"AuthController.login Endpoint: user foud, passing password: {password} for hashing");
+                if (EnvConfig.IsDebuggingLogging)    
+                    Console.WriteLine($"AuthController.login Endpoint: user foud, passing password: {password} for hashing");
                 ///delete password after register endpoint is complete
                 var HashedPassword = HelperMethods.HashPassword(password);
-                Console.WriteLine($"AuthController.login Endpoint: password has been hashed: {HashedPassword}, passing it for comparison");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"AuthController.login Endpoint: password has been hashed: {HashedPassword}, passing it for comparison");
                 //for testing purposes, hashing will be disabled to 
                 //bool Matching = true;
                 bool Matching = HelperMethods.IsCorrectPassword(user.PasswordHash, HashedPassword);
                 if (Matching)
                 {
-                    Console.WriteLine($"AuthController.login Endpoint: Correct password");
+                    if (EnvConfig.IsDebuggingLogging)    
+                        Console.WriteLine($"AuthController.login Endpoint: Correct password");
                     //create the tokens and return them
                     var AccessToken = HelperMethods.GenerateAccessToken(user.Id);
                     // create refresh token string
@@ -74,7 +84,8 @@ namespace backEnd.Modules.Authentication
                 }
                 else
                 {
-                    Console.WriteLine($"AuthController.login Endpoint: Incorrect password");
+                    if (EnvConfig.IsDebuggingLogging)
+                        Console.WriteLine($"AuthController.login Endpoint: Incorrect password");
                     return Unauthorized(new { message = "Invalid Email or Password" });
                 }
             }
@@ -84,7 +95,8 @@ namespace backEnd.Modules.Authentication
         [HttpPost("test")]
         public async Task<IActionResult> Test()
         {
-            Console.WriteLine("AuthController.Test: endpoint reached");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine("AuthController.Test: endpoint reached");
 
             // 1. Read access token from Authorization header
             string? authHeader = Request.Headers["Authorization"];
@@ -95,12 +107,14 @@ namespace backEnd.Modules.Authentication
                 accessToken = authHeader["Bearer ".Length..].Trim();
             }
 
-            Console.WriteLine($"AuthController.Test: access token received: {accessToken ?? "NONE"}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"AuthController.Test: access token received: {accessToken ?? "NONE"}");
 
             // 2. Read refresh token from cookie
             Request.Cookies.TryGetValue("refreshToken", out var refreshToken);
 
-            Console.WriteLine($"AuthController.Test: refresh token received: {refreshToken ?? "NONE"}");
+            if (EnvConfig.IsDebuggingLogging)    
+                Console.WriteLine($"AuthController.Test: refresh token received: {refreshToken ?? "NONE"}");
 
             return Ok(new
             {
@@ -118,7 +132,8 @@ namespace backEnd.Modules.Authentication
         {
             //validate data like the following
             //email, username, password, display name, bio, avatar storage key - util.validations
-            Console.WriteLine($"AuthController.Signup: endpoint reached, extracting data...");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"AuthController.Signup: endpoint reached, extracting data...");
 
             //you need to make sure the front end actually sends those, otherwise app will crash
             string UserName = user.GetProperty("UserName").GetString();
@@ -131,7 +146,8 @@ namespace backEnd.Modules.Authentication
 
 
 
-            Console.WriteLine($"AuthController.Signup: Request Data Extracted: {user}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"AuthController.Signup: Request Data Extracted: {user}");
 
             //check if user with same email or user name already exists, if already exists return error /user services
             var FoundUserWithEmail = await _userService.FindUserViaEmail(Email);
@@ -149,15 +165,17 @@ namespace backEnd.Modules.Authentication
                 !Utils.Validations.IsValidDisplayName(DisplayName) ||
                 !Utils.Validations.IsValidBio(Bio))
             {
-                Console.WriteLine($"AuthController.Signup: some data is corrupt, returning error bad request");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"AuthController.Signup: some data is corrupt, returning error bad request");
                 return BadRequest();
             }
 
 
-           
+
 
             //hash password
-            Console.WriteLine($"AuthController.Signup: hashing password");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"AuthController.Signup: hashing password");
             var HashedPassword = Utils.HelperMethods.HashPassword(Password);
 
 
@@ -176,22 +194,26 @@ namespace backEnd.Modules.Authentication
                 DisabledAt = null
             };
 
-            Console.WriteLine($"AuthController.Signup: about to save user in db - Email: {Email}, hashed password: {HashedPassword}, userName: {UserName}, display name: {DisplayName}, bio: {Bio}. CreatedAt, UpdatedAt and DisabledAt are auto generated");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"AuthController.Signup: about to save user in db - Email: {Email}, hashed password: {HashedPassword}, userName: {UserName}, display name: {DisplayName}, bio: {Bio}. CreatedAt, UpdatedAt and DisabledAt are auto generated");
 
             var SavedUser = await _userService.SaveUser(newUser);
             if (SavedUser == null)
             {
-                Console.WriteLine($"AuthController.Signup: user saving failed, returning error");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"AuthController.Signup: user saving failed, returning error");
                 return StatusCode(500, new { message = "saving user failed" });
             }
             else
             {
-                Console.WriteLine($"AuthController.Signup: user saved successfully, assigning tokens");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"AuthController.Signup: user saved successfully, assigning tokens");
                 var RefreshToken = await _authService.GenerateRefreshToken(newUser.Id);
 
                 if (RefreshToken == null)
                 {
-                    Console.WriteLine($"AuthController.Signup: refresh token is unable to be saved to db");
+                    if (EnvConfig.IsDebuggingLogging)
+                        Console.WriteLine($"AuthController.Signup: refresh token is unable to be saved to db");
                     return StatusCode(500, new { message = "saving refresh token failed" });
                 }
                 var AccessToken = HelperMethods.GenerateAccessToken(newUser.Id);

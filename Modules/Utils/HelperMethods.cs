@@ -23,11 +23,13 @@ namespace backEnd.Modules.Utils
 
         public static string HashPassword(string PlainPassword)
         {
-            Console.WriteLine($"HelperMethods.HashPassword: method called, about to hash a password: {PlainPassword}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"HelperMethods.HashPassword: method called, about to hash a password: {PlainPassword}");
             //first variable passed has to be an object of any sort
             //an object is needed under the hood for this to work at all
             var HashedPassword = _passwordHasher.HashPassword(null!, PlainPassword);
-            Console.WriteLine($"HelperMethods.HashPassword: password hashed from {PlainPassword} to {HashedPassword}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"HelperMethods.HashPassword: password hashed from {PlainPassword} to {HashedPassword}");
             return HashedPassword;
 
         }
@@ -35,7 +37,8 @@ namespace backEnd.Modules.Utils
         //
         public static bool IsCorrectPassword(string UserPassword, string ProvidedHashedPassword)
         {
-            Console.WriteLine($"HelperMethods.IsCorrectPassword: method called, about to compare {UserPassword} and {ProvidedHashedPassword}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"HelperMethods.IsCorrectPassword: method called, about to compare {UserPassword} and {ProvidedHashedPassword}");
             //tthe following line is how you would compare the passwords if they were both hashed, however because they're not hashed, we wont be able to use this, so well do a simple comparison
             var result = _passwordHasher.VerifyHashedPassword(null!, UserPassword, ProvidedHashedPassword);
             return result == PasswordVerificationResult.Success;
@@ -48,7 +51,8 @@ namespace backEnd.Modules.Utils
             var bytes = RandomNumberGenerator.GetBytes(byteLength);
             var secureString = Convert.ToBase64String(bytes).Replace("+", "-").Replace("/", "_").Replace("=", "");
 
-            Console.WriteLine($"HelperMethods.GenerateSecureRandomStrIng: method called, Generated a secure 64 byte string: {secureString}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"HelperMethods.GenerateSecureRandomStrIng: method called, Generated a secure 64 byte string: {secureString}");
 
             return secureString;
         }
@@ -56,16 +60,19 @@ namespace backEnd.Modules.Utils
         //different hashing algorithm than the password hasher
         public static string HashToken(string RawToken)
         {
-            Console.WriteLine($"HelperMethods.HashToken: method called");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"HelperMethods.HashToken: method called");
             var secret = Environment.GetEnvironmentVariable("REFRESH_SECRET") ?? throw new InvalidOperationException("REFRESH_SECRET_NOT_FOUND");
             //initilize a hmacsha256 object, pass it the secret
             //using the "using var" disposes of the variable as soon as its done with it for safety purposes
             using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secret));
-            Console.WriteLine($"HelperMethods.HashToken: declared a hmac variable to hold an instance of HMACSHA256 object: {hmac}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"HelperMethods.HashToken: declared a hmac variable to hold an instance of HMACSHA256 object: {hmac}");
 
             //uses the method of the class to encode the raw token to binary code
             var hashBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(RawToken));
-            Console.WriteLine($"HelperMethods.HashToken: binary code for token: {hashBytes} and base 64 string version of token: {Convert.ToBase64String(hashBytes)}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"HelperMethods.HashToken: binary code for token: {hashBytes} and base 64 string version of token: {Convert.ToBase64String(hashBytes)}");
 
             //converts the binary code to a normal string
             return Convert.ToBase64String(hashBytes);
@@ -80,7 +87,8 @@ namespace backEnd.Modules.Utils
             var secret = Environment.GetEnvironmentVariable("ACCESS_SECRET")??throw new InvalidOperationException("SECRET not found");
 
             //things to attach to the token
-            Console.WriteLine($"HelperMethods.GenerateAccessToken: method called, about to create claims");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"HelperMethods.GenerateAccessToken: method called, about to create claims");
             
             var claims = new[]
             {
@@ -92,14 +100,16 @@ namespace backEnd.Modules.Utils
 
             };
 
-            Console.WriteLine($"HelperMethods.GenerateAccessToken: claims created: {claims}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"HelperMethods.GenerateAccessToken: claims created: {claims}");
 
             //new instance of symmetric security key, it takes the env secret, however, it only takes bytes form of it, not direct strings            
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
             //signs the key and chooses which algorithm to incrypt it
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            Console.WriteLine($"HelperMethods.GenerateAccessToken: created key and credentials for the token - key: {key}, creds: {creds}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"HelperMethods.GenerateAccessToken: created key and credentials for the token - key: {key}, creds: {creds}");
             //finally, compose the full jwt
             var token = new JwtSecurityToken(
                 claims: claims,
@@ -108,7 +118,8 @@ namespace backEnd.Modules.Utils
             );
 
             var AccessToken =  new JwtSecurityTokenHandler().WriteToken(token);
-            Console.WriteLine($"HelperMethods.GenerateAccessToken: final Access Token: {AccessToken}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"HelperMethods.GenerateAccessToken: final Access Token: {AccessToken}");
             
             return AccessToken;
         }

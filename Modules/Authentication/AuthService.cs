@@ -30,10 +30,12 @@ namespace backEnd.Modules.Authentication
 
         public async Task<string> GenerateRefreshToken(Guid Id)
         {
-            Console.WriteLine($"AuthService.GenerateRefreshToken: generating a refresh token for user with Id: {Id}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"AuthService.GenerateRefreshToken: generating a refresh token for user with Id: {Id}");
 
             var rawToken = HelperMethods.GenerateSecureRandomString();
-            Console.WriteLine($"AuthService.GenerateRefreshToken: generated a raw token: {rawToken}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"AuthService.GenerateRefreshToken: generated a raw token: {rawToken}");
 
             var tokenHash = HelperMethods.HashToken(rawToken);
 
@@ -49,7 +51,8 @@ namespace backEnd.Modules.Authentication
 
             };
 
-            Console.WriteLine($"AuthService.GenerateRefreshToken: final refresh token {refreshToken}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"AuthService.GenerateRefreshToken: final refresh token {refreshToken}");
 
 
             _db.RefreshTokens.Add(refreshToken);
@@ -57,7 +60,8 @@ namespace backEnd.Modules.Authentication
 
             if(SavedToken <= 0)
             {
-                Console.WriteLine($"AuthService.GenerateRefreshToken: saving refresh token to db failed, returning null");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"AuthService.GenerateRefreshToken: saving refresh token to db failed, returning null");
                 return null;
 
             } 

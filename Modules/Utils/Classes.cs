@@ -29,3 +29,9 @@ public static class CookieHelper
 
     };
 }
+
+public static class EnvConfig
+{
+    public static readonly bool IsDebuggingLogging =
+        bool.TryParse(Environment.GetEnvironmentVariable("DEV_ENV"), out var result) && result;
+}

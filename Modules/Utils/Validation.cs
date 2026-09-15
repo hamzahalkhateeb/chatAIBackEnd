@@ -13,11 +13,13 @@ namespace backEnd.Modules.Utils
         //validate an email address
         public static bool IsValidEmail(string email)
         {
-            Console.WriteLine($"Utils.Validations.IsValidEmail method called, validation email: {email}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"Utils.Validations.IsValidEmail method called, validation email: {email}");
             //if email is null or contains just white space
             if (string.IsNullOrWhiteSpace(email))
             {
-                Console.WriteLine($"Utils.Validations.IsValidEmail: email: {email} is null or white space");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"Utils.Validations.IsValidEmail: email: {email} is null or white space");
                 return false;
             }
 
@@ -25,12 +27,14 @@ namespace backEnd.Modules.Utils
 
             if (Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase))
             {
-                Console.WriteLine($"Utils.Validations.IsValidEmail: email: {email} format validated successfully");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"Utils.Validations.IsValidEmail: email: {email} format validated successfully");
                 return Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase);
             }
             else
             {
-                Console.WriteLine($"Utils.Validations.IsValidEmail: email: {email} email is invalid");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"Utils.Validations.IsValidEmail: email: {email} email is invalid");
                 return Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase);
             }
 
@@ -42,10 +46,12 @@ namespace backEnd.Modules.Utils
         //validate password
         public static bool IsValidPassword(string password)
         {
-            Console.WriteLine($"Utils.Validations.IsValidPassword method called, validation password: {password}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"Utils.Validations.IsValidPassword method called, validation password: {password}");
             if (string.IsNullOrWhiteSpace(password))
             {
-                Console.WriteLine($"Utils.Validations.IsValidPassword: validation password: {password} is null or whitespace");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"Utils.Validations.IsValidPassword: validation password: {password} is null or whitespace");
                 return false;
             }
 
@@ -54,13 +60,15 @@ namespace backEnd.Modules.Utils
 
             if (Regex.IsMatch(password, pattern))
             {
-                Console.WriteLine($"Utils.Validations.IsValidPassword: validation password: {password} format validated successfully");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"Utils.Validations.IsValidPassword: validation password: {password} format validated successfully");
                 return Regex.IsMatch(password, pattern);
 
             }
             else
             {
-                Console.WriteLine($"Utils.Validations.IsValidPassword: validation password: {password} is invalid");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"Utils.Validations.IsValidPassword: validation password: {password} is invalid");
                 return Regex.IsMatch(password, pattern);
             }
 
@@ -71,10 +79,12 @@ namespace backEnd.Modules.Utils
 
         public static bool IsValidUsername(string username)
         {
-            Console.WriteLine($"Utils.Validations.IsValidUsername method called, validating username: {username}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"Utils.Validations.IsValidUsername method called, validating username: {username}");
             if (string.IsNullOrWhiteSpace(username))
             {
-                Console.WriteLine($"Utils.Validations.IsValidUsername: username is null or whitespace");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"Utils.Validations.IsValidUsername: username is null or whitespace");
                 return false;
             }
 
@@ -83,12 +93,14 @@ namespace backEnd.Modules.Utils
 
             if (Regex.IsMatch(username, pattern))
             {
-                Console.WriteLine($"Utils.Validations.IsValidUsername: username: {username} format validated successfully");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"Utils.Validations.IsValidUsername: username: {username} format validated successfully");
                 return true;
             }
             else
             {
-                Console.WriteLine($"Utils.Validations.IsValidUsername: username: {username} is invalid");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"Utils.Validations.IsValidUsername: username: {username} is invalid");
                 return false;
 
             }
@@ -96,12 +108,14 @@ namespace backEnd.Modules.Utils
 
         public static bool IsValidBio(string? bio)
         {
-            Console.WriteLine($"Utils.Validations.IsValidBio method called, validating bio: {bio}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"Utils.Validations.IsValidBio method called, validating bio: {bio}");
 
             // Bio is optional, so null/empty is valid
             if (string.IsNullOrWhiteSpace(bio))
             {
-                Console.WriteLine($"Utils.Validations.IsValidBio: bio is null or empty, treated as valid (optional field)");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"Utils.Validations.IsValidBio: bio is null or empty, treated as valid (optional field)");
                 return true;
             }
 
@@ -110,12 +124,14 @@ namespace backEnd.Modules.Utils
 
             if (bio.Length <= maxBioLength)
             {
-                Console.WriteLine($"Utils.Validations.IsValidBio: bio: {bio} length validated successfully");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"Utils.Validations.IsValidBio: bio: {bio} length validated successfully");
                 return true;
             }
             else
             {
-                Console.WriteLine($"Utils.Validations.IsValidBio: bio: {bio} exceeds max length of {maxBioLength}");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"Utils.Validations.IsValidBio: bio: {bio} exceeds max length of {maxBioLength}");
                 return false;
             }
         }
@@ -123,11 +139,13 @@ namespace backEnd.Modules.Utils
         // validate displayname
         public static bool IsValidDisplayName(string displayName)
         {
-            Console.WriteLine($"Utils.Validations.IsValidDisplayName method called, validating display name: {displayName}");
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"Utils.Validations.IsValidDisplayName method called, validating display name: {displayName}");
 
             if (string.IsNullOrWhiteSpace(displayName))
             {
-                Console.WriteLine($"Utils.Validations.IsValidDisplayName: display name is null or whitespace");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"Utils.Validations.IsValidDisplayName: display name is null or whitespace");
                 return false;
             }
 
@@ -138,12 +156,14 @@ namespace backEnd.Modules.Utils
 
             if (displayName.Length >= minLength && displayName.Length <= maxLength)
             {
-                Console.WriteLine($"Utils.Validations.IsValidDisplayName: display name: {displayName} length validated successfully");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"Utils.Validations.IsValidDisplayName: display name: {displayName} length validated successfully");
                 return true;
             }
             else
             {
-                Console.WriteLine($"Utils.Validations.IsValidDisplayName: display name: {displayName} length is invalid (must be {minLength}-{maxLength} chars)");
+                if (EnvConfig.IsDebuggingLogging)
+                    Console.WriteLine($"Utils.Validations.IsValidDisplayName: display name: {displayName} length is invalid (must be {minLength}-{maxLength} chars)");
                 return false;
             }
 
