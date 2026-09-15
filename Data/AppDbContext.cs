@@ -27,6 +27,7 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.HasPostgresExtension("pg_trgm");
         modelBuilder.Entity<Attachment>(entity =>
         {
             //primary key
@@ -153,7 +154,10 @@ public class AppDbContext : DbContext
            entity.Property(u=>u.Id).HasColumnType("uuid").HasDefaultValueSql("gen_random_uuid()");
 
            //unique and indexed username
-           entity.HasIndex(u => u.UserName).IsUnique();
+           entity.HasIndex(u => u.UserName).IsUnique().HasDatabaseName("IX_Users_UserName");
+
+           //add a trigram index for fuzzy search
+           entity.HasIndex(u => u.UserName).HasMethod("gin").HasOperators("gin_trgm_ops").HasDatabaseName("IX_Users_UserName_Trgm");
 
            //unique and indexed email
            entity.HasIndex(u => u.Email).IsUnique();

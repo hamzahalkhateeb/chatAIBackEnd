@@ -25,3 +25,12 @@ missing features from existing code:
 1- when user logs in, check if they already have a refresh token saved, if they do, give them that one
     needs alot of coordination with front end, will do down the line
 
+
+
+----------------------
+overall plan moving forward
+
+user looks up users using their username, fuzzy search end point, db returns 3 matches
+
+opens chat, chat doesn't save until first message is sent, given its a new chat, frontend should know, and there should 2 endpoints
+    1- create chat and save message 
