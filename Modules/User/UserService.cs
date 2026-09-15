@@ -37,7 +37,7 @@ public class UserService
             Console.WriteLine($"UserService.FindUserViaEmail: results found {user}");
         return user;
     }
-    //look for an exisstingg user with a usernaame
+    //look for an exisstingg user with a usernaame and return that user
     public async Task<FoundUserDTO?> FindUserViaUserName(string UserName)
     {
         if (EnvConfig.IsDebuggingLogging)
@@ -77,5 +77,32 @@ public class UserService
         if (EnvConfig.IsDebuggingLogging)
             Console.WriteLine($"UserService.SaveUser: user saved successfully with Id: {user.Id}");
         return user;
+    }
+
+    //fuzzy search all users with similar usernames
+    public async Task<List<Models.User>?> GetUsersViaUserName(string UserName)
+    {
+        if (EnvConfig.IsDebuggingLogging)
+            Console.WriteLine($"UserService.GetUsersViaUserName service called, looking for users with username: {UserName} ");
+
+        //query db
+        var MatchedUsers = await _db.Users
+        .Where(u => EF.Functions.TrigramsAreSimilar(u.UserName, UserName))
+        .OrderByDescending(u => EF.Functions.TrigramsSimilarity(u.UserName, UserName))
+        .Take(3)
+        .ToListAsync();
+
+        if(MatchedUsers.Count <=0)
+        {
+            if (EnvConfig.IsDebuggingLogging)
+                Console.WriteLine($"UserService.GetUsersViaUserName:no users found, returning null ");
+
+            return null;
+        }
+        
+        if (EnvConfig.IsDebuggingLogging)
+            Console.WriteLine($"UserService.GetUsersViaUserName: Matched Users found: {MatchedUsers} ");
+
+        return MatchedUsers;
     }
 }

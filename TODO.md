@@ -1,4 +1,8 @@
+make it so that getusersviausername only gets user Id, photo, username and display name
+only return those details to the requesting endpoint
 
+pick up user controller - get users line 86
+    user service line 83
 
 ------------------------------------------------------
 
