@@ -12,8 +12,8 @@ using backEnd.Data;
 namespace backEnd.Modules.Authentication
 {
 
-    
-    
+
+
     public class AuthService
     {
 
@@ -27,7 +27,7 @@ namespace backEnd.Modules.Authentication
             _db = db;
         }
 
-        
+
         public async Task<string> GenerateRefreshToken(Guid Id)
         {
             Console.WriteLine($"AuthService.GenerateRefreshToken: generating a refresh token for user with Id: {Id}");
@@ -39,22 +39,33 @@ namespace backEnd.Modules.Authentication
 
             var refreshToken = new RefreshToken
             {
-                
+
                 UserId = Id,
                 TokenHash = tokenHash,
                 CreatedAt = DateTimeOffset.UtcNow,
                 ExpiresAt = DateTimeOffset.UtcNow.AddDays(7),
                 RevokedAt = null,
                 ReplacedByTokenId = null,
-                
+
             };
 
-             Console.WriteLine($"AuthService.GenerateRefreshToken: final refresh token {refreshToken}");
+            Console.WriteLine($"AuthService.GenerateRefreshToken: final refresh token {refreshToken}");
 
-             _db.RefreshTokens.Add(refreshToken);
-             await _db.SaveChangesAsync();
 
-             return rawToken;
+            _db.RefreshTokens.Add(refreshToken);
+            var SavedToken = await _db.SaveChangesAsync();
+
+            if(SavedToken <= 0)
+            {
+                Console.WriteLine($"AuthService.GenerateRefreshToken: saving refresh token to db failed, returning null");
+                return null;
+
+            } 
+
+
+
+            return rawToken;
+            //why am i returning raw token?
 
         }
 

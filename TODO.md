@@ -1,5 +1,6 @@
+wrap refresh token creation in a try catch
 
-line 122, fix get property stuff
+move the user saving to user service
 
 check if user saving is a success
 check if token creations is a success

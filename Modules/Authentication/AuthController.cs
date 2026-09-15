@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Identity.Data;
 using System.Text.Json;
 using backEnd.Data;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace backEnd.Modules.Authentication
 {
@@ -120,7 +120,8 @@ namespace backEnd.Modules.Authentication
             //email, username, password, display name, bio, avatar storage key - util.validations
             Console.WriteLine($"AuthController.Signup: endpoint reached, extracting data...");
 
-            string UserName = user.TryGetProperty("UserName").GetString();
+            //you need to make sure the front end actually sends those, otherwise app will crash
+            string UserName = user.GetProperty("UserName").GetString();
             string DisplayName = user.GetProperty("DisplayName").GetString();
             string Email = user.GetProperty("Email").GetString();
             string Password = user.GetProperty("Password").GetString();
@@ -153,11 +154,13 @@ namespace backEnd.Modules.Authentication
             }
 
 
-            //auto generate created at, updated and disabled at is null at first
+           
 
             //hash password
             Console.WriteLine($"AuthController.Signup: hashing password");
             var HashedPassword = Utils.HelperMethods.HashPassword(Password);
+
+
 
             //save user using a auth service, use transaction when using the image uploader down the line, currently, it doesnt need a transactiona s its one action
             var newUser = new Models.User
@@ -175,20 +178,27 @@ namespace backEnd.Modules.Authentication
 
             Console.WriteLine($"AuthController.Signup: about to save user in db - Email: {Email}, hashed password: {HashedPassword}, userName: {UserName}, display name: {DisplayName}, bio: {Bio}. CreatedAt, UpdatedAt and DisabledAt are auto generated");
 
-            _db.Users.Add(newUser);
-            await _db.SaveChangesAsync();
+            var SavedUser = await _userService.SaveUser(newUser);
+            if (SavedUser == null)
+            {
+                Console.WriteLine($"AuthController.Signup: user saving failed, returning error");
+                return StatusCode(500, new { message = "saving user failed" });
+            }
+            else
+            {
+                Console.WriteLine($"AuthController.Signup: user saved successfully, assigning tokens");
+                var RefreshToken = await _authService.GenerateRefreshToken(newUser.Id);
 
-            Console.WriteLine($"AuthController.Signup: user saved successfully, assigning tokens");
+                if (RefreshToken == null)
+                {
+                    Console.WriteLine($"AuthController.Signup: refresh token is unable to be saved to db");
+                    return StatusCode(500, new { message = "saving refresh token failed" });
+                }
+                var AccessToken = HelperMethods.GenerateAccessToken(newUser.Id);
+                Response.Cookies.Append("RefreshToken", RefreshToken, CookieHelper.RefreshTokenCookieOptions());
+                return Ok(new { message = "signing up successful", AccessToken });
 
-
-            var AccessToken = HelperMethods.GenerateAccessToken(newUser.Id);
-
-            var RefreshToken = await _authService.GenerateRefreshToken(newUser.Id);
-            //append cookie
-            Response.Cookies.Append("RefreshToken", RefreshToken, CookieHelper.RefreshTokenCookieOptions());
-            return Ok(new { message = "signing up successful", AccessToken });
-
-
+            }
 
         }
         //1- register user

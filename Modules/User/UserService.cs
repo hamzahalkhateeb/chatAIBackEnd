@@ -3,14 +3,16 @@ using backEnd.Modules.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace backEnd.Modules.User;
+
 public class UserService
 {
     //dependancy inject db context 
-    private readonly AppDbContext _dbContext;
+    private readonly AppDbContext _db;
+
 
     public UserService(AppDbContext dbContext)
     {
-        _dbContext = dbContext;
+        _db = dbContext;
     }
 
     //look for an existing user with this email
@@ -20,7 +22,7 @@ public class UserService
     public async Task<FoundUserDTO?> FindUserViaEmail(string email)
     {
         Console.WriteLine($"UserService.FindUserViaEmail: method called, finding user with email: {email}");
-        var user = await _dbContext.Users.Where(u => u.Email == email)
+        var user = await _db.Users.Where(u => u.Email == email)
         .Select(u => new FoundUserDTO
         {
             Id = u.Id,
@@ -37,7 +39,7 @@ public class UserService
     public async Task<FoundUserDTO?> FindUserViaUserName(string UserName)
     {
         Console.WriteLine($"UserService.FindUserUserNNaaame: method called, finding user with UserName: {UserName}");
-        var user = await _dbContext.Users.Where(u => u.UserName == UserName)
+        var user = await _db.Users.Where(u => u.UserName == UserName)
         .Select(u => new FoundUserDTO
         {
             Id = u.Id,
@@ -53,5 +55,20 @@ public class UserService
 
 
     //create a new user using these details
+    public async Task<Models.User?> SaveUser(Models.User user)
+    {
+        Console.WriteLine($"UserService.SaveUser: about to save user in db - Email: {user.Email}, userName: {user.UserName}, display name: {user.DisplayName}, bio: {user.Bio}");
 
+        _db.Users.Add(user);
+        var rowsSaved = await _db.SaveChangesAsync();
+
+        if (rowsSaved <= 0)
+        {
+            Console.WriteLine($"UserService.SaveUser: SaveChangesAsync reported 0 rows affected, returning null");
+            return null;
+
+        }
+        Console.WriteLine($"UserService.SaveUser: user saved successfully with Id: {user.Id}");
+        return user;
+    }
 }
