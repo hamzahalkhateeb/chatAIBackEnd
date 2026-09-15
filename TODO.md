@@ -1,10 +1,3 @@
-wrap refresh token creation in a try catch
-
-move the user saving to user service
-
-check if user saving is a success
-check if token creations is a success
-have a transaction across user creation and access token creation
 
 
 ------------------------------------------------------
